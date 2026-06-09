@@ -1,11 +1,15 @@
 import pandas as pd
-
+import matplotlib.pyplot as plt
+from pathlib import Path
 
 class MaintenanceOperationsProfiler:
 
     def __init__(self, data_path: str):
+
         self.df = pd.read_csv(data_path)
 
+        Path("figures").mkdir(exist_ok=True)
+        
     def dataset_summary(self):
 
         print("=" * 60)
@@ -31,13 +35,41 @@ class MaintenanceOperationsProfiler:
     
     def maintenance_category_analysis(self):
 
-        print("\nMAINTENANCE CATEGORY ANALYSIS")
-        print("-" * 60)
+	    print("\nMAINTENANCE CATEGORY ANALYSIS")
+	    print("-" * 60)
 
-        print(
-	    self.df["maintenance_category"]
-	    .value_counts()
-        )
+	    category_counts = (
+		self.df["maintenance_category"]
+		.value_counts()
+	    )
+
+	    print(category_counts)
+
+	    plt.figure(figsize=(8, 5))
+
+	    category_counts.plot(
+		kind="bar"
+	    )
+
+	    plt.title(
+		"Maintenance Category Distribution"
+	    )
+
+	    plt.xlabel(
+		"Maintenance Category"
+	    )
+
+	    plt.ylabel(
+		"Number of Reports"
+	    )
+
+	    plt.tight_layout()
+
+	    plt.savefig(
+		"figures/maintenance_category_distribution.png"
+	    )
+
+	    plt.close()
 
 if __name__ == "__main__":
 
