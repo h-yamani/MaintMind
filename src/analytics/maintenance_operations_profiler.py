@@ -28,7 +28,16 @@ class MaintenanceOperationsProfiler:
         print("-" * 60)
 
         print(self.df.duplicated().sum())
+    
+    def maintenance_category_analysis(self):
 
+        print("\nMAINTENANCE CATEGORY ANALYSIS")
+        print("-" * 60)
+
+        print(
+	    self.df["maintenance_category"]
+	    .value_counts()
+        )
 
 if __name__ == "__main__":
 
@@ -41,3 +50,5 @@ if __name__ == "__main__":
     profiler.missing_values_report()
 
     profiler.duplicate_report_analysis()
+
+    profiler.maintenance_category_analysis()
