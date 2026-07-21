@@ -5,3 +5,10 @@ __pycache__/
 
 # Pytest cache
 .pytest_cache/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# Pytest cache
+.pytest_cache/
