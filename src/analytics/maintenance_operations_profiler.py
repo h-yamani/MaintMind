@@ -327,6 +327,49 @@ class MaintenanceOperationsProfiler:
         )
 
         plt.close()
+    def priority_and_safety_analysis(self):
+
+        print("\nPRIORITY AND SAFETY ANALYSIS")
+        print("-" * 60)
+
+        priority_summary = (
+            self.df.groupby("priority")
+            .agg(
+                report_count=("report_id", "count"),
+                total_downtime=("downtime_hours", "sum"),
+                total_repair_cost=("repair_cost", "sum"),
+            )
+            .reindex(["Low", "Medium", "High", "Critical"])
+        )
+
+        print(priority_summary.round(2))
+
+        safety_reports = self.df[
+            self.df["issue_type"] == "Safety Concern"
+        ]
+
+        print("\nSafety-related reports:", len(safety_reports))
+        print(
+            "Safety-related downtime:",
+            round(safety_reports["downtime_hours"].sum(), 2),
+        )
+        print(
+            "Safety-related repair cost:",
+            round(safety_reports["repair_cost"].sum(), 2),
+        )
+
+        plt.figure(figsize=(8, 5))
+
+        priority_summary["report_count"].plot(kind="bar")
+
+        plt.title("Maintenance Reports by Priority")
+        plt.xlabel("Priority")
+        plt.ylabel("Number of Reports")
+        plt.xticks(rotation=0)
+        plt.tight_layout()
+
+        plt.savefig("figures/reports_by_priority.png")
+        plt.close()
 
 if __name__ == "__main__":
 
@@ -347,4 +390,5 @@ if __name__ == "__main__":
     profiler.downtime_and_cost_analysis()
     profiler.technician_reporting_analysis()
     profiler.recurring_failure_analysis()
+    profiler.priority_and_safety_analysis()
     
