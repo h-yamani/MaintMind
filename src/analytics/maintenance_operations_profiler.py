@@ -234,6 +234,99 @@ class MaintenanceOperationsProfiler:
         )
 
         plt.close()
+    def technician_reporting_analysis(self):
+
+        print("\nTECHNICIAN REPORTING ANALYSIS")
+        print("-" * 60)
+
+        technician_summary = (
+            self.df.assign(
+                note_length=self.df["technician_notes"]
+                .fillna("")
+                .str.split()
+                .str.len()
+            )
+            .groupby(["technician_id", "technician_name"])
+            .agg(
+                report_count=("report_id", "count"),
+                total_downtime=("downtime_hours", "sum"),
+                total_repair_cost=("repair_cost", "sum"),
+                average_note_length=("note_length", "mean"),
+                critical_reports=(
+                    "priority",
+                    lambda values: (values == "Critical").sum(),
+                ),
+            )
+            .sort_values("report_count", ascending=False)
+        )
+
+        print(technician_summary.round(2))
+
+        plt.figure(figsize=(9, 5))
+
+        technician_summary["report_count"].plot(kind="bar")
+
+        plt.title("Maintenance Reports by Technician")
+        plt.xlabel("Technician")
+        plt.ylabel("Number of Reports")
+        plt.xticks(rotation=45, ha="right")
+        plt.tight_layout()
+
+        plt.savefig("figures/reports_by_technician.png")
+        plt.close()
+    def recurring_failure_analysis(self):
+
+        print("\nRECURRING FAILURE ANALYSIS")
+        print("-" * 60)
+
+        recurring_failures = (
+            self.df.groupby(
+                ["equipment_name", "issue_type"]
+            )
+            .agg(
+                occurrence_count=("report_id", "count"),
+                total_downtime=("downtime_hours", "sum"),
+                total_repair_cost=("repair_cost", "sum"),
+            )
+            .reset_index()
+            .sort_values(
+                ["occurrence_count", "total_downtime"],
+                ascending=False,
+            )
+        )
+
+        recurring_failures = recurring_failures[
+            recurring_failures["occurrence_count"] > 1
+        ]
+
+        print(recurring_failures.head(10).round(2))
+
+        top_failures = recurring_failures.head(10).copy()
+
+        top_failures["equipment_issue"] = (
+            top_failures["equipment_name"]
+            + " — "
+            + top_failures["issue_type"]
+        )
+
+        plt.figure(figsize=(11, 6))
+
+        plt.barh(
+            top_failures["equipment_issue"],
+            top_failures["occurrence_count"],
+        )
+
+        plt.title("Top Recurring Equipment Failures")
+        plt.xlabel("Number of Occurrences")
+        plt.ylabel("Equipment and Issue")
+        plt.gca().invert_yaxis()
+        plt.tight_layout()
+
+        plt.savefig(
+            "figures/top_recurring_failures.png"
+        )
+
+        plt.close()
 
 if __name__ == "__main__":
 
@@ -252,4 +345,6 @@ if __name__ == "__main__":
     profiler.equipment_workload_analysis()
     profiler.failure_analysis()
     profiler.downtime_and_cost_analysis()
+    profiler.technician_reporting_analysis()
+    profiler.recurring_failure_analysis()
     
