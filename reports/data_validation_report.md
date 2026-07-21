@@ -5,7 +5,7 @@
 | Validation check | Result |
 |---|---:|
 | Rows | 100 |
-| Columns | 14 |
+| Columns | 22 |
 | Missing required columns | 0 |
 | Missing values | 0 |
 | Duplicate report IDs | 0 |
