@@ -139,6 +139,101 @@ class MaintenanceOperationsProfiler:
         )
 
         plt.close()
+    def equipment_workload_analysis(self):
+
+        print("\nEQUIPMENT WORKLOAD ANALYSIS")
+        print("-" * 60)
+
+        equipment_summary = (
+            self.df.groupby("equipment_name")
+            .agg(
+                report_count=("report_id", "count"),
+                total_downtime=("downtime_hours", "sum"),
+                total_repair_cost=("repair_cost", "sum"),
+            )
+            .sort_values("report_count", ascending=False)
+        )
+
+        print(equipment_summary.round(2))
+
+        plt.figure(figsize=(10, 5))
+
+        equipment_summary["report_count"].plot(kind="bar")
+
+        plt.title("Maintenance Reports by Equipment")
+        plt.xlabel("Equipment")
+        plt.ylabel("Number of Reports")
+        plt.xticks(rotation=45, ha="right")
+        plt.tight_layout()
+
+        plt.savefig(
+            "figures/equipment_maintenance_workload.png"
+        )
+
+        plt.close() 
+    def failure_analysis(self):
+
+        print("\nFAILURE ANALYSIS")
+        print("-" * 60)
+
+        failure_summary = (
+            self.df.groupby("issue_type")
+            .agg(
+                failure_count=("report_id", "count"),
+                total_downtime=("downtime_hours", "sum"),
+                total_repair_cost=("repair_cost", "sum"),
+            )
+            .sort_values("failure_count", ascending=False)
+        )
+
+        print(failure_summary.round(2))
+
+        plt.figure(figsize=(9, 5))
+
+        failure_summary["failure_count"].plot(kind="bar")
+
+        plt.title("Maintenance Failures by Issue Type")
+        plt.xlabel("Issue Type")
+        plt.ylabel("Number of Reports")
+        plt.xticks(rotation=45, ha="right")
+        plt.tight_layout()
+
+        plt.savefig("figures/issue_type_distribution.png")
+        plt.close()
+    def downtime_and_cost_analysis(self):
+
+        print("\nDOWNTIME AND COST ANALYSIS")
+        print("-" * 60)
+
+        category_summary = (
+            self.df.groupby("maintenance_category")
+            .agg(
+                report_count=("report_id", "count"),
+                total_downtime=("downtime_hours", "sum"),
+                average_downtime=("downtime_hours", "mean"),
+                total_repair_cost=("repair_cost", "sum"),
+                average_repair_cost=("repair_cost", "mean"),
+            )
+            .sort_values("total_downtime", ascending=False)
+        )
+
+        print(category_summary.round(2))
+
+        plt.figure(figsize=(10, 5))
+
+        category_summary["total_downtime"].plot(kind="bar")
+
+        plt.title("Total Downtime by Maintenance Category")
+        plt.xlabel("Maintenance Category")
+        plt.ylabel("Downtime Hours")
+        plt.xticks(rotation=45, ha="right")
+        plt.tight_layout()
+
+        plt.savefig(
+            "figures/downtime_by_maintenance_category.png"
+        )
+
+        plt.close()
 
 if __name__ == "__main__":
 
@@ -155,3 +250,6 @@ if __name__ == "__main__":
     profiler.maintenance_category_analysis()
     profiler.monthly_report_analysis()
     profiler.equipment_workload_analysis()
+    profiler.failure_analysis()
+    profiler.downtime_and_cost_analysis()
+    
