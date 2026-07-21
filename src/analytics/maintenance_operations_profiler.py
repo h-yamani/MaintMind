@@ -370,6 +370,39 @@ class MaintenanceOperationsProfiler:
 
         plt.savefig("figures/reports_by_priority.png")
         plt.close()
+    def location_analysis(self):
+
+        print("\nLOCATION ANALYSIS")
+        print("-" * 60)
+
+        location_summary = (
+            self.df.groupby("location")
+            .agg(
+                report_count=("report_id", "count"),
+                total_downtime=("downtime_hours", "sum"),
+                total_repair_cost=("repair_cost", "sum"),
+                critical_reports=(
+                    "priority",
+                    lambda values: (values == "Critical").sum(),
+                ),
+            )
+            .sort_values("total_downtime", ascending=False)
+        )
+
+        print(location_summary.round(2))
+
+        plt.figure(figsize=(9, 5))
+
+        location_summary["total_downtime"].plot(kind="bar")
+
+        plt.title("Maintenance Downtime by Location")
+        plt.xlabel("Location")
+        plt.ylabel("Downtime Hours")
+        plt.xticks(rotation=45, ha="right")
+        plt.tight_layout()
+
+        plt.savefig("figures/downtime_by_location.png")
+        plt.close()
 
 if __name__ == "__main__":
 
@@ -391,4 +424,5 @@ if __name__ == "__main__":
     profiler.technician_reporting_analysis()
     profiler.recurring_failure_analysis()
     profiler.priority_and_safety_analysis()
+    profiler.location_analysis()
     
