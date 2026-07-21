@@ -5,20 +5,20 @@ from datetime import datetime, timedelta
 random.seed(42)
 
 technicians = [
-    "John Smith",
-    "Sarah Wilson",
-    "Mike Brown",
-    "David Taylor",
-    "Emma Johnson"
+    ("TECH001", "John Smith"),
+    ("TECH002", "Sarah Wilson"),
+    ("TECH003", "Mike Brown"),
+    ("TECH004", "David Taylor"),
+    ("TECH005", "Emma Johnson")
 ]
 
 equipment = [
-    ("CAT320 Excavator", "Excavator"),
-    ("Komatsu D65", "Bulldozer"),
-    ("Hitachi ZX200", "Excavator"),
-    ("Hydraulic Press A", "Hydraulic System"),
-    ("Generator G1", "Generator"),
-    ("Forklift F3", "Forklift")
+    ("EQ001", "CAT320 Excavator", "Excavator"),
+    ("EQ002", "Komatsu D65", "Bulldozer"),
+    ("EQ003", "Hitachi ZX200", "Excavator"),
+    ("EQ004", "Hydraulic Press A", "Hydraulic System"),
+    ("EQ005", "Generator G1", "Generator"),
+    ("EQ006", "Forklift F3", "Forklift")
 ]
 
 categories = [
@@ -59,23 +59,26 @@ start_date = datetime(2025, 1, 1)
 
 for i in range(100):
 
-    equip_name, equip_type = random.choice(equipment)
-
+    equipment_id, equip_name, equip_type = random.choice(equipment)
+    technician_id, technician_name = random.choice(technicians)
+    issue = random.choice(issues)
     report = {
         "report_id": f"REP{i+1:03d}",
         "report_date": start_date + timedelta(days=random.randint(0, 365)),
-        "technician_name": random.choice(technicians),
+        "technician_id": technician_id,
+        "technician_name": technician_name,
+        "equipment_id": equipment_id,
         "equipment_name": equip_name,
         "equipment_type": equip_type,
         "maintenance_category": random.choice(categories),
-        "issue_type": random.choice(issues),
+        "issue_type":issue,
         "priority": random.choice(priorities),
         "location": random.choice(locations),
         "downtime_hours": round(random.uniform(0.5, 12), 1),
         "repair_cost": round(random.uniform(100, 5000), 2),
         "technician_notes":
             f"Performed maintenance on {equip_name}. "
-            f"Detected {random.choice(issues)} and completed repair. "
+            f"Detected {issue} and completed repair. "
             f"Recommend follow-up inspection."
     }
 
