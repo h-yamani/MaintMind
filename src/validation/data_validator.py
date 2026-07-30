@@ -4,7 +4,6 @@ import pandas as pd
 
 
 class MaintenanceDataValidator:
-
     REQUIRED_COLUMNS = [
         "report_id",
         "report_date",
@@ -33,8 +32,7 @@ class MaintenanceDataValidator:
 
         issue_note_mismatches = self.df[
             ~self.df.apply(
-                lambda row: str(row["issue_type"])
-                in str(row["technician_notes"]),
+                lambda row: str(row["issue_type"]) in str(row["technician_notes"]),
                 axis=1,
             )
         ]
@@ -50,42 +48,21 @@ class MaintenanceDataValidator:
                 ]
             ),
             "Missing values": int(self.df.isna().sum().sum()),
-            "Duplicate report IDs": int(
-                self.df["report_id"].duplicated().sum()
-            ),
-            "Duplicate complete records": int(
-                self.df.duplicated().sum()
-            ),
+            "Duplicate report IDs": int(self.df["report_id"].duplicated().sum()),
+            "Duplicate complete records": int(self.df.duplicated().sum()),
             "Invalid dates": int(dates.isna().sum()),
-            "Negative downtime values": int(
-                (self.df["downtime_hours"] < 0).sum()
-            ),
-            "Negative repair costs": int(
-                (self.df["repair_cost"] < 0).sum()
-            ),
+            "Negative downtime values": int((self.df["downtime_hours"] < 0).sum()),
+            "Negative repair costs": int((self.df["repair_cost"] < 0).sum()),
             "Technician ID mapping errors": int(
                 (
-                    self.df.groupby("technician_id")[
-                        "technician_name"
-                    ].nunique()
-                    > 1
+                    self.df.groupby("technician_id")["technician_name"].nunique() > 1
                 ).sum()
             ),
             "Equipment name mapping errors": int(
-                (
-                    self.df.groupby("equipment_id")[
-                        "equipment_name"
-                    ].nunique()
-                    > 1
-                ).sum()
+                (self.df.groupby("equipment_id")["equipment_name"].nunique() > 1).sum()
             ),
             "Equipment type mapping errors": int(
-                (
-                    self.df.groupby("equipment_id")[
-                        "equipment_type"
-                    ].nunique()
-                    > 1
-                ).sum()
+                (self.df.groupby("equipment_id")["equipment_type"].nunique() > 1).sum()
             ),
             "Issue-note mismatches": len(issue_note_mismatches),
         }
@@ -112,9 +89,7 @@ class MaintenanceDataValidator:
 
         error_checks = list(results.values())[2:]
         status = (
-            "PASS"
-            if all(value == 0 for value in error_checks)
-            else "REVIEW REQUIRED"
+            "PASS" if all(value == 0 for value in error_checks) else "REVIEW REQUIRED"
         )
 
         lines = [
@@ -152,9 +127,7 @@ class MaintenanceDataValidator:
 
 
 if __name__ == "__main__":
-    validator = MaintenanceDataValidator(
-        "data/maintenance_reports.csv"
-    )
+    validator = MaintenanceDataValidator("data/maintenance_reports.csv")
 
     validation_results = validator.validate()
     validator.print_report(validation_results)

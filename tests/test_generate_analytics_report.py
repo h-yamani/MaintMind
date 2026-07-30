@@ -36,9 +36,7 @@ def test_load_data_parses_report_dates(tmp_path: Path) -> None:
     dataframe = load_data(csv_path)
 
     assert len(dataframe) == 2
-    assert pd.api.types.is_datetime64_any_dtype(
-        dataframe["report_date"]
-    )
+    assert pd.api.types.is_datetime64_any_dtype(dataframe["report_date"])
 
 
 def test_load_data_raises_for_missing_file(
@@ -56,9 +54,7 @@ def test_load_data_raises_for_missing_file(
 
 def test_generate_report_contains_key_findings() -> None:
     dataframe = sample_maintenance_data()
-    dataframe["report_date"] = pd.to_datetime(
-        dataframe["report_date"]
-    )
+    dataframe["report_date"] = pd.to_datetime(dataframe["report_date"])
 
     report = generate_report(dataframe)
 
@@ -69,4 +65,3 @@ def test_generate_report_contains_key_findings() -> None:
     assert "Bearing Wear" in report
     assert "Auckland" in report
     assert "synthetic" in report
-

@@ -8,7 +8,6 @@ from typing import Iterable
 import matplotlib.pyplot as plt
 import pandas as pd
 
-
 LOGGER = logging.getLogger(__name__)
 
 
@@ -57,9 +56,7 @@ class MaintenanceOperationsProfiler:
         self.df = self._load_data()
 
         if source_dataset is not None:
-            self.df = self._filter_source_dataset(
-                source_dataset
-            )
+            self.df = self._filter_source_dataset(source_dataset)
 
         self.figure_prefix = self._create_figure_prefix()
 
@@ -69,16 +66,11 @@ class MaintenanceOperationsProfiler:
         """Load and minimally validate the dataset."""
 
         if not self.data_path.exists():
-            raise FileNotFoundError(
-                f"Dataset not found: {self.data_path}"
-            )
+            raise FileNotFoundError(f"Dataset not found: {self.data_path}")
 
         dataframe = pd.read_csv(self.data_path)
 
-        missing_columns = (
-            self.BASE_REQUIRED_COLUMNS
-            - set(dataframe.columns)
-        )
+        missing_columns = self.BASE_REQUIRED_COLUMNS - set(dataframe.columns)
 
         if missing_columns:
             raise ValueError(
@@ -122,8 +114,7 @@ class MaintenanceOperationsProfiler:
 
                 if dataframe[column].isna().any():
                     raise ValueError(
-                        f"Column '{column}' contains "
-                        "invalid boolean values."
+                        f"Column '{column}' contains invalid boolean values."
                     )
 
         return dataframe
@@ -136,20 +127,14 @@ class MaintenanceOperationsProfiler:
 
         if "source_dataset" not in self.df.columns:
             raise ValueError(
-                "Cannot filter by source because "
-                "'source_dataset' is missing."
+                "Cannot filter by source because 'source_dataset' is missing."
             )
 
-        filtered_data = self.df[
-            self.df["source_dataset"] == source_dataset
-        ].copy()
+        filtered_data = self.df[self.df["source_dataset"] == source_dataset].copy()
 
         if filtered_data.empty:
             available_sources = sorted(
-                self.df["source_dataset"]
-                .dropna()
-                .astype(str)
-                .unique()
+                self.df["source_dataset"].dropna().astype(str).unique()
             )
 
             raise ValueError(
@@ -171,11 +156,7 @@ class MaintenanceOperationsProfiler:
             )
             return
 
-        source_count = (
-            self.df["source_dataset"]
-            .dropna()
-            .nunique()
-        )
+        source_count = self.df["source_dataset"].dropna().nunique()
 
         if source_count > 1 and self.source_dataset is None:
             LOGGER.warning(
@@ -191,9 +172,7 @@ class MaintenanceOperationsProfiler:
             return ""
 
         safe_name = "".join(
-            character.lower()
-            if character.isalnum()
-            else "_"
+            character.lower() if character.isalnum() else "_"
             for character in self.source_dataset
         ).strip("_")
 
@@ -202,9 +181,7 @@ class MaintenanceOperationsProfiler:
     def _figure_path(self, filename: str) -> Path:
         """Return the complete output path for a figure."""
 
-        return self.figures_dir / (
-            self.figure_prefix + filename
-        )
+        return self.figures_dir / (self.figure_prefix + filename)
 
     @staticmethod
     def _print_section(title: str) -> None:
@@ -220,18 +197,13 @@ class MaintenanceOperationsProfiler:
     ) -> bool:
         """Check whether columns required by an analysis exist."""
 
-        missing_columns = sorted(
-            set(columns) - set(self.df.columns)
-        )
+        missing_columns = sorted(set(columns) - set(self.df.columns))
 
         if not missing_columns:
             return True
 
         self._print_section(analysis_name)
-        print(
-            "Analysis skipped. Missing columns: "
-            + ", ".join(missing_columns)
-        )
+        print("Analysis skipped. Missing columns: " + ", ".join(missing_columns))
 
         LOGGER.warning(
             "%s skipped because columns are missing: %s",
@@ -257,9 +229,7 @@ class MaintenanceOperationsProfiler:
         plot_values = values.copy()
         plot_values.index = plot_values.index.map(str)
 
-        figure, axis = plt.subplots(
-            figsize=figsize
-        )
+        figure, axis = plt.subplots(figsize=figsize)
 
         if horizontal:
             plot_values.plot(
@@ -304,14 +274,8 @@ class MaintenanceOperationsProfiler:
             "date_end": self.df["report_date"].max(),
         }
 
-        print(
-            f"Total Reports: "
-            f"{summary['total_reports']}"
-        )
-        print(
-            f"Columns: "
-            f"{summary['total_columns']}"
-        )
+        print(f"Total Reports: {summary['total_reports']}")
+        print(f"Columns: {summary['total_columns']}")
         print(
             f"Date Range: "
             f"{summary['date_start'].date()} to "
@@ -319,28 +283,16 @@ class MaintenanceOperationsProfiler:
         )
 
         if "downtime_hours" in self.df.columns:
-            total_downtime = (
-                self.df["downtime_hours"].sum()
-            )
+            total_downtime = self.df["downtime_hours"].sum()
             summary["total_downtime"] = total_downtime
 
-            print(
-                f"Total Downtime: "
-                f"{total_downtime:,.1f} hours"
-            )
+            print(f"Total Downtime: {total_downtime:,.1f} hours")
 
         if "repair_cost" in self.df.columns:
-            total_repair_cost = (
-                self.df["repair_cost"].sum()
-            )
-            summary[
-                "total_repair_cost"
-            ] = total_repair_cost
+            total_repair_cost = self.df["repair_cost"].sum()
+            summary["total_repair_cost"] = total_repair_cost
 
-            print(
-                f"Total Repair Cost: "
-                f"${total_repair_cost:,.2f}"
-            )
+            print(f"Total Repair Cost: ${total_repair_cost:,.2f}")
 
         return summary
 
@@ -349,16 +301,10 @@ class MaintenanceOperationsProfiler:
 
         self._print_section("DATA PROVENANCE ANALYSIS")
 
-        missing_columns = sorted(
-            self.PROVENANCE_COLUMNS
-            - set(self.df.columns)
-        )
+        missing_columns = sorted(self.PROVENANCE_COLUMNS - set(self.df.columns))
 
         if missing_columns:
-            print(
-                "Missing provenance columns: "
-                + ", ".join(missing_columns)
-            )
+            print("Missing provenance columns: " + ", ".join(missing_columns))
 
             return pd.DataFrame()
 
@@ -387,14 +333,12 @@ class MaintenanceOperationsProfiler:
             .reset_index()
         )
 
-        duplicate_source_records = (
-            self.df.duplicated(
-                subset=[
-                    "source_dataset",
-                    "source_record_id",
-                ]
-            ).sum()
-        )
+        duplicate_source_records = self.df.duplicated(
+            subset=[
+                "source_dataset",
+                "source_record_id",
+            ]
+        ).sum()
 
         print(provenance_summary.to_string(index=False))
         print(
@@ -402,17 +346,11 @@ class MaintenanceOperationsProfiler:
             duplicate_source_records,
         )
 
-        real_records = (
-            ~self.df["is_synthetic"]
-        ).sum()
+        real_records = (~self.df["is_synthetic"]).sum()
 
-        synthetic_records = (
-            self.df["is_synthetic"]
-        ).sum()
+        synthetic_records = (self.df["is_synthetic"]).sum()
 
-        augmented_records = (
-            self.df["is_augmented"]
-        ).sum()
+        augmented_records = (self.df["is_augmented"]).sum()
 
         print("Real records:", int(real_records))
         print(
@@ -442,13 +380,9 @@ class MaintenanceOperationsProfiler:
 
         self._print_section("DUPLICATE REPORTS")
 
-        duplicate_records = int(
-            self.df.duplicated().sum()
-        )
+        duplicate_records = int(self.df.duplicated().sum())
 
-        duplicate_report_ids = int(
-            self.df["report_id"].duplicated().sum()
-        )
+        duplicate_report_ids = int(self.df["report_id"].duplicated().sum())
 
         print(
             "Duplicate complete records:",
@@ -466,9 +400,7 @@ class MaintenanceOperationsProfiler:
     ) -> pd.Series:
         """Analyse maintenance category volume."""
 
-        analysis_name = (
-            "MAINTENANCE CATEGORY ANALYSIS"
-        )
+        analysis_name = "MAINTENANCE CATEGORY ANALYSIS"
 
         if not self._has_columns(
             ["maintenance_category"],
@@ -478,21 +410,14 @@ class MaintenanceOperationsProfiler:
 
         self._print_section(analysis_name)
 
-        category_counts = (
-            self.df["maintenance_category"]
-            .value_counts()
-        )
+        category_counts = self.df["maintenance_category"].value_counts()
 
         print(category_counts)
 
         self._save_bar_chart(
             values=category_counts,
-            filename=(
-                "maintenance_category_distribution.png"
-            ),
-            title=(
-                "Maintenance Category Distribution"
-            ),
+            filename=("maintenance_category_distribution.png"),
+            title=("Maintenance Category Distribution"),
             xlabel="Maintenance Category",
             ylabel="Number of Reports",
         )
@@ -502,17 +427,11 @@ class MaintenanceOperationsProfiler:
     def monthly_report_analysis(self) -> pd.Series:
         """Analyse monthly report volume."""
 
-        self._print_section(
-            "MONTHLY REPORT VOLUME"
-        )
+        self._print_section("MONTHLY REPORT VOLUME")
 
         monthly_counts = (
             self.df.assign(
-                report_month=(
-                    self.df["report_date"]
-                    .dt.to_period("M")
-                    .astype(str)
-                )
+                report_month=(self.df["report_date"].dt.to_period("M").astype(str))
             )
             .groupby("report_month")
             .size()
@@ -520,9 +439,7 @@ class MaintenanceOperationsProfiler:
 
         print(monthly_counts)
 
-        figure, axis = plt.subplots(
-            figsize=(10, 5)
-        )
+        figure, axis = plt.subplots(figsize=(10, 5))
 
         axis.plot(
             monthly_counts.index,
@@ -530,9 +447,7 @@ class MaintenanceOperationsProfiler:
             marker="o",
         )
 
-        axis.set_title(
-            "Monthly Maintenance Report Volume"
-        )
+        axis.set_title("Monthly Maintenance Report Volume")
         axis.set_xlabel("Month")
         axis.set_ylabel("Number of Reports")
         axis.tick_params(
@@ -544,9 +459,7 @@ class MaintenanceOperationsProfiler:
         figure.tight_layout()
 
         figure.savefig(
-            self._figure_path(
-                "monthly_report_volume.png"
-            ),
+            self._figure_path("monthly_report_volume.png"),
             dpi=150,
             bbox_inches="tight",
         )
@@ -560,9 +473,7 @@ class MaintenanceOperationsProfiler:
     ) -> pd.DataFrame:
         """Analyse maintenance workload by equipment."""
 
-        analysis_name = (
-            "EQUIPMENT WORKLOAD ANALYSIS"
-        )
+        analysis_name = "EQUIPMENT WORKLOAD ANALYSIS"
 
         required_columns = [
             "equipment_name",
@@ -603,17 +514,9 @@ class MaintenanceOperationsProfiler:
         print(equipment_summary.round(2))
 
         self._save_bar_chart(
-            values=(
-                equipment_summary[
-                    "report_count"
-                ]
-            ),
-            filename=(
-                "equipment_maintenance_workload.png"
-            ),
-            title=(
-                "Maintenance Reports by Equipment"
-            ),
+            values=(equipment_summary["report_count"]),
+            filename=("equipment_maintenance_workload.png"),
+            title=("Maintenance Reports by Equipment"),
             xlabel="Equipment",
             ylabel="Number of Reports",
         )
@@ -664,17 +567,9 @@ class MaintenanceOperationsProfiler:
         print(failure_summary.round(2))
 
         self._save_bar_chart(
-            values=(
-                failure_summary[
-                    "failure_count"
-                ]
-            ),
-            filename=(
-                "issue_type_distribution.png"
-            ),
-            title=(
-                "Maintenance Failures by Issue Type"
-            ),
+            values=(failure_summary["failure_count"]),
+            filename=("issue_type_distribution.png"),
+            title=("Maintenance Failures by Issue Type"),
             xlabel="Issue Type",
             ylabel="Number of Reports",
         )
@@ -686,9 +581,7 @@ class MaintenanceOperationsProfiler:
     ) -> pd.DataFrame:
         """Analyse downtime and repair cost by category."""
 
-        analysis_name = (
-            "DOWNTIME AND COST ANALYSIS"
-        )
+        analysis_name = "DOWNTIME AND COST ANALYSIS"
 
         required_columns = [
             "maintenance_category",
@@ -705,9 +598,7 @@ class MaintenanceOperationsProfiler:
         self._print_section(analysis_name)
 
         category_summary = (
-            self.df.groupby(
-                "maintenance_category"
-            )
+            self.df.groupby("maintenance_category")
             .agg(
                 report_count=(
                     "report_id",
@@ -739,17 +630,9 @@ class MaintenanceOperationsProfiler:
         print(category_summary.round(2))
 
         self._save_bar_chart(
-            values=(
-                category_summary[
-                    "total_downtime"
-                ]
-            ),
-            filename=(
-                "downtime_by_maintenance_category.png"
-            ),
-            title=(
-                "Total Downtime by Maintenance Category"
-            ),
+            values=(category_summary["total_downtime"]),
+            filename=("downtime_by_maintenance_category.png"),
+            title=("Total Downtime by Maintenance Category"),
             xlabel="Maintenance Category",
             ylabel="Downtime Hours",
         )
@@ -761,9 +644,7 @@ class MaintenanceOperationsProfiler:
     ) -> pd.DataFrame:
         """Analyse technician workload and note quality."""
 
-        analysis_name = (
-            "TECHNICIAN REPORTING ANALYSIS"
-        )
+        analysis_name = "TECHNICIAN REPORTING ANALYSIS"
 
         required_columns = [
             "technician_id",
@@ -785,10 +666,7 @@ class MaintenanceOperationsProfiler:
         technician_summary = (
             self.df.assign(
                 note_length=(
-                    self.df["technician_notes"]
-                    .fillna("")
-                    .str.split()
-                    .str.len()
+                    self.df["technician_notes"].fillna("").str.split().str.len()
                 )
             )
             .groupby(
@@ -816,9 +694,7 @@ class MaintenanceOperationsProfiler:
                 ),
                 critical_reports=(
                     "priority",
-                    lambda values: (
-                        values == "Critical"
-                    ).sum(),
+                    lambda values: (values == "Critical").sum(),
                 ),
             )
             .sort_values(
@@ -829,26 +705,16 @@ class MaintenanceOperationsProfiler:
 
         print(technician_summary.round(2))
 
-        chart_values = (
-            technician_summary[
-                "report_count"
-            ].copy()
-        )
+        chart_values = technician_summary["report_count"].copy()
 
         chart_values.index = [
-            technician_name
-            for _, technician_name
-            in chart_values.index
+            technician_name for _, technician_name in chart_values.index
         ]
 
         self._save_bar_chart(
             values=chart_values,
-            filename=(
-                "reports_by_technician.png"
-            ),
-            title=(
-                "Maintenance Reports by Technician"
-            ),
+            filename=("reports_by_technician.png"),
+            title=("Maintenance Reports by Technician"),
             xlabel="Technician",
             ylabel="Number of Reports",
         )
@@ -860,9 +726,7 @@ class MaintenanceOperationsProfiler:
     ) -> pd.DataFrame:
         """Identify repeated equipment and issue combinations."""
 
-        analysis_name = (
-            "RECURRING FAILURE ANALYSIS"
-        )
+        analysis_name = "RECURRING FAILURE ANALYSIS"
 
         required_columns = [
             "equipment_name",
@@ -911,59 +775,34 @@ class MaintenanceOperationsProfiler:
             )
         )
 
-        print(
-            recurring_failures
-            .head(10)
-            .round(2)
-        )
+        print(recurring_failures.head(10).round(2))
 
         if recurring_failures.empty:
-            print(
-                "No recurring equipment failures "
-                "were identified."
-            )
+            print("No recurring equipment failures were identified.")
             return recurring_failures
 
-        top_failures = (
-            recurring_failures
-            .head(10)
-            .copy()
-        )
+        top_failures = recurring_failures.head(10).copy()
 
         top_failures["equipment_issue"] = (
-            top_failures["equipment_name"]
-            + " — "
-            + top_failures["issue_type"]
+            top_failures["equipment_name"] + " — " + top_failures["issue_type"]
         )
 
-        figure, axis = plt.subplots(
-            figsize=(11, 6)
-        )
+        figure, axis = plt.subplots(figsize=(11, 6))
 
         axis.barh(
             top_failures["equipment_issue"],
-            top_failures[
-                "occurrence_count"
-            ],
+            top_failures["occurrence_count"],
         )
 
-        axis.set_title(
-            "Top Recurring Equipment Failures"
-        )
-        axis.set_xlabel(
-            "Number of Occurrences"
-        )
-        axis.set_ylabel(
-            "Equipment and Issue"
-        )
+        axis.set_title("Top Recurring Equipment Failures")
+        axis.set_xlabel("Number of Occurrences")
+        axis.set_ylabel("Equipment and Issue")
         axis.invert_yaxis()
 
         figure.tight_layout()
 
         figure.savefig(
-            self._figure_path(
-                "top_recurring_failures.png"
-            ),
+            self._figure_path("top_recurring_failures.png"),
             dpi=150,
             bbox_inches="tight",
         )
@@ -977,9 +816,7 @@ class MaintenanceOperationsProfiler:
     ) -> pd.DataFrame:
         """Analyse maintenance priority and safety exposure."""
 
-        analysis_name = (
-            "PRIORITY AND SAFETY ANALYSIS"
-        )
+        analysis_name = "PRIORITY AND SAFETY ANALYSIS"
 
         required_columns = [
             "priority",
@@ -1018,10 +855,7 @@ class MaintenanceOperationsProfiler:
 
         print(priority_summary.round(2))
 
-        safety_reports = self.df[
-            self.df["issue_type"]
-            == "Safety Concern"
-        ]
+        safety_reports = self.df[self.df["issue_type"] == "Safety Concern"]
 
         print(
             "\nSafety-related reports:",
@@ -1030,34 +864,22 @@ class MaintenanceOperationsProfiler:
         print(
             "Safety-related downtime:",
             round(
-                safety_reports[
-                    "downtime_hours"
-                ].sum(),
+                safety_reports["downtime_hours"].sum(),
                 2,
             ),
         )
         print(
             "Safety-related repair cost:",
             round(
-                safety_reports[
-                    "repair_cost"
-                ].sum(),
+                safety_reports["repair_cost"].sum(),
                 2,
             ),
         )
 
         self._save_bar_chart(
-            values=(
-                priority_summary[
-                    "report_count"
-                ]
-            ),
-            filename=(
-                "reports_by_priority.png"
-            ),
-            title=(
-                "Maintenance Reports by Priority"
-            ),
+            values=(priority_summary["report_count"]),
+            filename=("reports_by_priority.png"),
+            title=("Maintenance Reports by Priority"),
             xlabel="Priority",
             ylabel="Number of Reports",
             rotation=0,
@@ -1103,9 +925,7 @@ class MaintenanceOperationsProfiler:
                 ),
                 critical_reports=(
                     "priority",
-                    lambda values: (
-                        values == "Critical"
-                    ).sum(),
+                    lambda values: (values == "Critical").sum(),
                 ),
             )
             .sort_values(
@@ -1117,17 +937,9 @@ class MaintenanceOperationsProfiler:
         print(location_summary.round(2))
 
         self._save_bar_chart(
-            values=(
-                location_summary[
-                    "total_downtime"
-                ]
-            ),
-            filename=(
-                "downtime_by_location.png"
-            ),
-            title=(
-                "Maintenance Downtime by Location"
-            ),
+            values=(location_summary["total_downtime"]),
+            filename=("downtime_by_location.png"),
+            title=("Maintenance Downtime by Location"),
             xlabel="Location",
             ylabel="Downtime Hours",
         )
@@ -1157,8 +969,7 @@ def parse_arguments() -> argparse.Namespace:
 
     parser = argparse.ArgumentParser(
         description=(
-            "Profile maintenance operations data "
-            "and generate analytical figures."
+            "Profile maintenance operations data and generate analytical figures."
         )
     )
 
@@ -1178,8 +989,7 @@ def parse_arguments() -> argparse.Namespace:
         "--source-dataset",
         default=None,
         help=(
-            "Optional source dataset to analyse "
-            "without combining unrelated sources."
+            "Optional source dataset to analyse without combining unrelated sources."
         ),
     )
 
@@ -1191,10 +1001,7 @@ def main() -> None:
 
     logging.basicConfig(
         level=logging.INFO,
-        format=(
-            "%(asctime)s | %(levelname)s | "
-            "%(name)s | %(message)s"
-        ),
+        format=("%(asctime)s | %(levelname)s | %(name)s | %(message)s"),
     )
 
     arguments = parse_arguments()

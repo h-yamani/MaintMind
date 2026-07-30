@@ -2,7 +2,6 @@ from pathlib import Path
 
 import pandas as pd
 
-
 DATA_PATH = Path("data/maintenance_reports.csv")
 REPORT_PATH = Path("reports/maintenance_analytics_report.md")
 
@@ -30,9 +29,7 @@ def generate_report(dataframe: pd.DataFrame) -> str:
     total_cost = dataframe["repair_cost"].sum()
     average_cost = dataframe["repair_cost"].mean()
 
-    critical_reports = (
-        dataframe["priority"] == "Critical"
-    ).sum()
+    critical_reports = (dataframe["priority"] == "Critical").sum()
 
     top_equipment = (
         dataframe.groupby("equipment_name")["downtime_hours"]

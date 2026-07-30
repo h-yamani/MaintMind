@@ -6,15 +6,12 @@ from pathlib import Path
 
 import pandas as pd
 
-
 RANDOM_SEED = 42
 REPORT_COUNT = 100
 
 START_DATE = datetime(2025, 1, 1)
 
-OUTPUT_PATH = Path(
-    "data/maintenance_reports.csv"
-)
+OUTPUT_PATH = Path("data/maintenance_reports.csv")
 
 SOURCE_SYSTEM = "maintmind_generator"
 SOURCE_DATASET = "maintmind_synthetic_v1"
@@ -87,103 +84,43 @@ ISSUES = [
 
 ISSUE_ACTIONS = {
     "Hydraulic Leak": [
-        (
-            "Replaced the damaged hydraulic hose "
-            "and tightened the coupling"
-        ),
-        (
-            "Replaced the leaking seal and cleaned "
-            "the affected area"
-        ),
-        (
-            "Tightened loose fittings and completed "
-            "a pressure test"
-        ),
+        ("Replaced the damaged hydraulic hose and tightened the coupling"),
+        ("Replaced the leaking seal and cleaned the affected area"),
+        ("Tightened loose fittings and completed a pressure test"),
     ],
     "Bearing Wear": [
-        (
-            "Replaced the worn bearing and "
-            "lubricated the assembly"
-        ),
-        (
-            "Adjusted the bearing alignment and "
-            "tested rotation"
-        ),
-        (
-            "Removed the damaged bearing and "
-            "installed a replacement"
-        ),
+        ("Replaced the worn bearing and lubricated the assembly"),
+        ("Adjusted the bearing alignment and tested rotation"),
+        ("Removed the damaged bearing and installed a replacement"),
     ],
     "Electrical Fault": [
-        (
-            "Repaired damaged wiring and tested "
-            "the electrical circuit"
-        ),
-        (
-            "Replaced the faulty relay and "
-            "verified normal operation"
-        ),
-        (
-            "Cleaned the electrical connections "
-            "and secured loose terminals"
-        ),
+        ("Repaired damaged wiring and tested the electrical circuit"),
+        ("Replaced the faulty relay and verified normal operation"),
+        ("Cleaned the electrical connections and secured loose terminals"),
     ],
     "Pressure Loss": [
-        (
-            "Adjusted the pressure regulator and "
-            "tested system pressure"
-        ),
+        ("Adjusted the pressure regulator and tested system pressure"),
         "Replaced the faulty pressure valve",
-        (
-            "Inspected the system for leaks and "
-            "restored operating pressure"
-        ),
+        ("Inspected the system for leaks and restored operating pressure"),
     ],
     "Overheating": [
-        (
-            "Cleaned the cooling system and "
-            "checked coolant levels"
-        ),
+        ("Cleaned the cooling system and checked coolant levels"),
         "Replaced the damaged cooling fan",
-        (
-            "Cleared blocked ventilation and "
-            "tested operating temperature"
-        ),
+        ("Cleared blocked ventilation and tested operating temperature"),
     ],
     "Safety Concern": [
-        (
-            "Secured the unsafe component and "
-            "completed a safety inspection"
-        ),
+        ("Secured the unsafe component and completed a safety inspection"),
         "Replaced the damaged safety guard",
-        (
-            "Isolated the equipment and corrected "
-            "the identified hazard"
-        ),
+        ("Isolated the equipment and corrected the identified hazard"),
     ],
 }
 
 FOLLOW_UP_ACTIONS = [
-    (
-        "Monitor the equipment during the next "
-        "operating shift"
-    ),
-    (
-        "Schedule a follow-up inspection within "
-        "two weeks"
-    ),
-    (
-        "Review the issue during the next "
-        "preventive maintenance service"
-    ),
-    (
-        "No further action is required unless "
-        "the issue returns"
-    ),
-    (
-        "Inspect related components for similar "
-        "wear"
-    ),
+    ("Monitor the equipment during the next operating shift"),
+    ("Schedule a follow-up inspection within two weeks"),
+    ("Review the issue during the next preventive maintenance service"),
+    ("No further action is required unless the issue returns"),
+    ("Inspect related components for similar wear"),
 ]
 
 PRIORITIES = [
@@ -240,9 +177,7 @@ def generate_maintenance_reports(
     """Generate reproducible synthetic maintenance reports."""
 
     if report_count <= 0:
-        raise ValueError(
-            "report_count must be greater than zero."
-        )
+        raise ValueError("report_count must be greater than zero.")
 
     random.seed(RANDOM_SEED)
 
@@ -264,13 +199,9 @@ def generate_maintenance_reports(
 
         issue = random.choice(ISSUES)
 
-        repair_action = random.choice(
-            ISSUE_ACTIONS[issue]
-        )
+        repair_action = random.choice(ISSUE_ACTIONS[issue])
 
-        follow_up = random.choice(
-            FOLLOW_UP_ACTIONS
-        )
+        follow_up = random.choice(FOLLOW_UP_ACTIONS)
 
         technician_note = create_technician_note(
             equipment_name=equipment_name,
@@ -280,11 +211,8 @@ def generate_maintenance_reports(
         )
 
         report_date = (
-            START_DATE
-            + timedelta(
-                days=random.randint(0, 364)
-            )
-        ).date().isoformat()
+            (START_DATE + timedelta(days=random.randint(0, 364))).date().isoformat()
+        )
 
         report = {
             "report_id": report_id,
@@ -294,16 +222,10 @@ def generate_maintenance_reports(
             "equipment_id": equipment_id,
             "equipment_name": equipment_name,
             "equipment_type": equipment_type,
-            "maintenance_category": random.choice(
-                CATEGORIES
-            ),
+            "maintenance_category": random.choice(CATEGORIES),
             "issue_type": issue,
-            "priority": random.choice(
-                PRIORITIES
-            ),
-            "location": random.choice(
-                LOCATIONS
-            ),
+            "priority": random.choice(PRIORITIES),
+            "location": random.choice(LOCATIONS),
             "downtime_hours": round(
                 random.uniform(0.5, 12.0),
                 1,
@@ -319,9 +241,7 @@ def generate_maintenance_reports(
             "is_synthetic": True,
             "is_augmented": False,
             "licence": DATA_LICENCE,
-            "ingestion_timestamp": (
-                INGESTION_TIMESTAMP
-            ),
+            "ingestion_timestamp": (INGESTION_TIMESTAMP),
             "schema_version": SCHEMA_VERSION,
         }
 
@@ -356,15 +276,9 @@ def main() -> None:
 
     print(dataframe.head())
     print()
-    print(
-        f"Rows: {len(dataframe)}"
-    )
-    print(
-        f"Columns: {len(dataframe.columns)}"
-    )
-    print(
-        f"Dataset saved to {OUTPUT_PATH}"
-    )
+    print(f"Rows: {len(dataframe)}")
+    print(f"Columns: {len(dataframe.columns)}")
+    print(f"Dataset saved to {OUTPUT_PATH}")
 
 
 if __name__ == "__main__":
