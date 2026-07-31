@@ -8,29 +8,118 @@
       "status": "registered_source_temporarily_unavailable",
       "access_status": "dns_resolution_failed",
       "last_access_attempt": "2026-07-31T05:01:45.201945+00:00",
-      "access_note": "Official NIST loader URL currently points to prognosticsdl.systemhealthlab.com, which did not resolve. No unofficial replacement was used."
+      "access_note": "Official NIST loader URL currently points to prognosticsdl.systemhealthlab.com, which did not resolve. No unofficial replacement was used.",
+      "owner": "National Institute of Standards and Technology",
+      "landing_page": "https://pages.nist.gov/nestor/nestor/datasets/",
+      "license_status": "Dataset-specific redistribution terms pending verification",
+      "intended_use": [
+        "maintenance-text cleaning",
+        "component and symptom extraction",
+        "corrective-action extraction",
+        "structured extraction evaluation"
+      ],
+      "source_group": "nist_nestor",
+      "allowed_joins": [],
+      "manifest": null
     },
     {
       "source_id": "nyc_amps_work_orders",
       "name": "NYC Parks AMPS Work Orders",
-      "status": "registered_not_downloaded"
+      "status": "downloaded_verified",
+      "owner": "City of New York, NYC Parks",
+      "dataset_identifier": "8sdw-8vja",
+      "landing_page": "https://data.cityofnewyork.us/d/8sdw-8vja",
+      "access_status": "available_locally",
+      "license_status": "Subject to NYC Open Data Terms of Use",
+      "intended_use": [
+        "work-order ingestion",
+        "status and backlog analysis",
+        "completion-time analysis",
+        "data-quality testing"
+      ],
+      "source_group": "nyc_amps",
+      "allowed_joins": [
+        "nyc_amps_assets"
+      ],
+      "join_rule": "EVT_OBJECT = OBJ_CODE",
+      "manifest": "data/manifests/nyc_amps_v1.json"
     },
     {
       "source_id": "nyc_amps_assets",
       "name": "NYC Parks AMPS Assets",
-      "status": "registered_not_downloaded",
-      "allowed_join": "OBJ_CODE = EVT_OBJECT"
+      "status": "downloaded_verified",
+      "allowed_join": "OBJ_CODE = EVT_OBJECT",
+      "owner": "City of New York, NYC Parks",
+      "dataset_identifier": "e25p-jzfy",
+      "landing_page": "https://data.cityofnewyork.us/d/e25p-jzfy",
+      "access_status": "available_locally",
+      "license_status": "Subject to NYC Open Data Terms of Use",
+      "intended_use": [
+        "asset modelling",
+        "asset and work-order joins",
+        "equipment analysis"
+      ],
+      "source_group": "nyc_amps",
+      "allowed_joins": [
+        "nyc_amps_work_orders"
+      ],
+      "join_rule": "OBJ_CODE = EVT_OBJECT",
+      "manifest": "data/manifests/nyc_amps_v1.json"
     },
     {
       "source_id": "scania_component_x_v3",
       "name": "SCANIA Component X Version 3",
       "status": "registered_not_downloaded",
-      "license": "CC BY 4.0"
+      "license": "CC BY 4.0",
+      "owner": "Scania CV AB and Stockholm University",
+      "version": "3",
+      "doi": "10.5878/bnh5-ka77",
+      "landing_page": "https://researchdata.se/en/catalogue/dataset/2024-34/3",
+      "access_status": "registered_not_downloaded",
+      "license_status": "CC BY 4.0",
+      "intended_use": [
+        "predictive maintenance",
+        "failure prediction",
+        "temporal validation",
+        "calibration and drift analysis"
+      ],
+      "source_group": "scania_component_x",
+      "allowed_joins": [],
+      "manifest": null
+    },
+    {
+      "source_id": "technical_documents",
+      "name": "Permission-cleared Technical Documents",
+      "owner": "Source-specific",
+      "status": "sources_not_yet_selected",
+      "access_status": "not_acquired",
+      "license_status": "Only public-domain, open-licensed, or explicitly permitted documents are allowed",
+      "intended_use": [
+        "document ingestion",
+        "retrieval evaluation",
+        "evidence-linked recommendations"
+      ],
+      "source_group": "technical_documents",
+      "allowed_joins": [],
+      "manifest": null
     }
   ],
   "rules": {
     "keep_unrelated_datasets_separate": true,
     "raw_files_committed_to_git": false,
-    "checksum_required": true
+    "checksum_required": true,
+    "required_provenance_fields": [
+      "source_id",
+      "source_url",
+      "source_version",
+      "retrieved_at",
+      "file_size_bytes",
+      "sha256"
+    ],
+    "prohibited_cross_source_joins": [
+      "Nestor records with NYC AMPS records",
+      "SCANIA vehicles with work-order assets",
+      "technical documents with assets without documented identifiers"
+    ]
   }
 }
