@@ -1,75 +1,71 @@
 # MaintMind Roadmap Status
 
+## Progress Dashboard
+
+| Phase | Status | Progress |
+|---|---|---:|
+| Phase 0 — Project foundation | Complete | 100% |
+| Phase 1 — Real-data acquisition, licensing, and provenance | Active | 0% |
+| Phase 2 — PostgreSQL canonical data model | Not started | 0% |
+
 ## Current Phase
 
-Phase 0 — Project Control, Product Definition, and Repository Foundation
+Phase 1 — Real-data acquisition, licensing, and provenance
 
-## Current Issue
+## Phase 0 Completed
 
-0.1 — Create repository control documents
+- Product problem statement
+- Users, workflows, and human-approval boundaries
+- Non-goals
+- Data, AI, system, and business success metrics
+- Four initial architecture decision records
+- Product context diagram
+- Container diagram
+- Versioned synthetic dataset and SHA-256 verification
+- Ruff linting and formatting
+- GitHub Actions continuous integration
+- Automated tests passing
 
-## Last Completed Deliverable
+## Current Evidence
 
-Updated the public repository README to present MaintMind as an evidence-grounded, production-oriented AI engineering portfolio project.
+- `docs/product/`
+- `docs/decisions/`
+- `docs/architecture/`
+- `data/synthetic/v1/`
+- `pyproject.toml`
+- `requirements-dev.txt`
+- `.github/workflows/ci.yml`
+- `tests/`
 
-## Completed Foundation
+## Phase 1 Objective
 
-* Reproducible synthetic maintenance-data generator
-* Fixed random seed
-* Record-level provenance fields
-* Versioned synthetic fixture
-* SHA-256 fixture checksum
-* Automated data validation
-* Provenance-aware maintenance analytics
-* Generated validation and analytics reports
-* Automated Python tests
-* Pinned dependencies
-* Public portfolio README
+Acquire approved real public maintenance datasets while recording licensing,
+source identity, retrieval details, checksums, versions, intended uses, and
+source-separation rules.
 
-## Tests Passing
+## Selected Sources
 
-* Analytics report tests: 3 passed
-* Synthetic dataset validation: passed
-* Provenance validation: passed
+1. NIST Nestor excavator maintenance work orders
+2. NYC Parks AMPS work orders and asset data
+3. SCANIA Component X telemetry
+4. Permission-cleared technical maintenance documents
 
-## Known Blockers
+## Phase 1 Completion Gate
 
-* Phase 0 product documents are incomplete
-* Initial architecture decision records are incomplete
-* CI and code-quality gates are not yet configured
-* Product context diagram has not been created
-* Synthetic fixture must be moved to `data/synthetic/v1/`
+- [ ] Create the real-data directory structure
+- [ ] Create a machine-readable source registry
+- [ ] Document source URLs, owners, licences, and intended uses
+- [ ] Record access and redistribution restrictions
+- [ ] Create an ingestion manifest schema
+- [ ] Download or formally register each selected source
+- [ ] Generate and verify SHA-256 checksums
+- [ ] Preserve dataset versions and retrieval dates
+- [ ] Document source-separation and prohibited joins
+- [ ] Add provenance validation tests
+- [ ] Add a Phase 1 data acquisition report
+- [ ] Run linting and automated tests
+- [ ] Update this dashboard and activate Phase 2
 
 ## Next Exact Task
 
-Create the MaintMind product problem statement.
-
-## Decision Required
-
-Confirm product scope, user roles, human-approval boundaries, and measurable success criteria through the Phase 0 documents.
-
-## Evidence Saved
-
-* `README.md`
-* `src/data_generation/synthetic_maintenance_data_generator.py`
-* `src/validation/data_validator.py`
-* `src/analytics/maintenance_operations_profiler.py`
-* `data/synthetic/maintenance_reports_v1.csv`
-* `data/synthetic/maintenance_reports_v1.sha256`
-* `reports/data_validation_report.md`
-* `reports/maintenance_analytics_report.md`
-* `figures/`
-* `tests/`
-
-## Phase 0 Completion Gate
-
-* [ ] Product problem defined in one paragraph
-* [ ] Users and approval boundaries documented
-* [ ] Non-goals documented
-* [ ] Data, AI, system, and business success metrics documented
-* [ ] Four initial ADRs completed
-* [ ] Product context diagram completed
-* [ ] Formatting and linting configured
-* [ ] CI runs automated tests
-* [ ] `ROADMAP_STATUS.md` identifies Phase 1 as the next phase
-
+Create the Phase 1 real-data directory structure and source registry.
