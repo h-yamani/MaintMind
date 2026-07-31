@@ -1,2 +1,3 @@
 -r requirements.txt
 ruff==0.15.22
+jsonschema[format]==4.26.0
