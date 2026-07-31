@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0",
+  "last_reviewed": "2026-07-31",
+  "sources": [
+    {
+      "source_id": "nist_nestor_excavators",
+      "name": "NIST Nestor Excavator Work Orders",
+      "status": "registered_not_downloaded"
+    },
+    {
+      "source_id": "nyc_amps_work_orders",
+      "name": "NYC Parks AMPS Work Orders",
+      "status": "registered_not_downloaded"
+    },
+    {
+      "source_id": "nyc_amps_assets",
+      "name": "NYC Parks AMPS Assets",
+      "status": "registered_not_downloaded",
+      "allowed_join": "OBJ_CODE = EVT_OBJECT"
+    },
+    {
+      "source_id": "scania_component_x_v3",
+      "name": "SCANIA Component X Version 3",
+      "status": "registered_not_downloaded",
+      "license": "CC BY 4.0"
+    }
+  ],
+  "rules": {
+    "keep_unrelated_datasets_separate": true,
+    "raw_files_committed_to_git": false,
+    "checksum_required": true
+  }
+}

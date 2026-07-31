@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "dataset_group": "nyc_amps",
+  "allowed_join": "work_orders.EVT_OBJECT = assets.OBJ_CODE",
+  "files": [
+    {
+      "source_id": "nyc_amps_assets",
+      "original_filename": "assets.csv",
+      "local_path": "data/real/nyc_amps/raw/assets.csv",
+      "source_url": "https://data.cityofnewyork.us/api/views/e25p-jzfy/rows.csv?accessType=DOWNLOAD",
+      "retrieved_at": "2026-07-31T16:00:43.915588+12:00",
+      "file_size_bytes": 26289965,
+      "sha256": "23f7684eaffba7149e6514a1e79b7ead7d375d043a9b84959096f7344565aa83",
+      "raw_file_committed_to_git": false
+    },
+    {
+      "source_id": "nyc_amps_work_orders",
+      "original_filename": "work_orders.csv",
+      "local_path": "data/real/nyc_amps/raw/work_orders.csv",
+      "source_url": "https://data.cityofnewyork.us/api/v3/views/8sdw-8vja/export.csv?accessType=DOWNLOAD",
+      "retrieved_at": "2026-07-31T16:00:45.399409+12:00",
+      "file_size_bytes": 879144338,
+      "sha256": "fa210c4c78a87eff2684e2f9b708b7861df3253aacc5739748404200af10ad04",
+      "raw_file_committed_to_git": false
+    }
+  ]
+}
