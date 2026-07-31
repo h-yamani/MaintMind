@@ -1066,6 +1066,77 @@ The plugin-autoload setting prevents unrelated globally installed pytest plugins
 
 ---
 
+## Reproducing the Project
+
+MaintMind can be cloned and developed on another computer without downloading the large real datasets.
+
+### Clone and install
+
+```bash
+git clone https://github.com/h-yamani/MaintMind.git
+cd MaintMind
+
+python -m venv .venv
+source .venv/bin/activate
+
+python -m pip install --upgrade pip
+python -m pip install -r requirements-dev.txt
+```
+
+### Run the quality checks
+
+```bash
+python -m ruff check .
+python -m ruff format --check .
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest -q
+```
+
+The standard automated tests use the committed synthetic fixture, so the real datasets are not required for normal development or CI.
+
+### Acquire real datasets when needed
+
+Raw public datasets are downloaded locally and are intentionally excluded from Git.
+
+Download the NIST Nestor excavator work orders:
+
+```bash
+python scripts/acquire_real_data.py --source nestor
+```
+
+Download the NYC Parks AMPS work orders and assets:
+
+```bash
+python scripts/acquire_real_data.py --source nyc_amps
+```
+
+Download all currently configured sources:
+
+```bash
+python scripts/acquire_real_data.py --source all
+```
+
+Verify existing local files and regenerate their manifests without downloading them again:
+
+```bash
+python scripts/acquire_real_data.py --source nestor --verify-only
+python scripts/acquire_real_data.py --source nyc_amps --verify-only
+```
+
+The script records the source identifier, official URL, version, retrieval timestamp, local path, file size, SHA-256 checksum, and approved join rules in `data/manifests/`.
+
+The large raw files remain under `data/real/**/raw/` and are excluded through `.gitignore`. Only the reproducible acquisition code, source registry, manifests, checksums, tests, and documentation are committed to GitHub.
+
+The only approved join between the current NYC AMPS files is:
+
+```text
+work_orders.EVT_OBJECT = assets.OBJ_CODE
+```
+
+Nestor, NYC AMPS, SCANIA, and technical-document records must remain source-separated unless a documented real-world relationship exists.
+
+
+---
+
 ## Development Roadmap
 
 MaintMind is developed through gated phases:
