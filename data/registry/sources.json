@@ -5,7 +5,10 @@
     {
       "source_id": "nist_nestor_excavators",
       "name": "NIST Nestor Excavator Work Orders",
-      "status": "registered_not_downloaded"
+      "status": "registered_source_temporarily_unavailable",
+      "access_status": "dns_resolution_failed",
+      "last_access_attempt": "2026-07-31T05:01:45.201945+00:00",
+      "access_note": "Official NIST loader URL currently points to prognosticsdl.systemhealthlab.com, which did not resolve. No unofficial replacement was used."
     },
     {
       "source_id": "nyc_amps_work_orders",
